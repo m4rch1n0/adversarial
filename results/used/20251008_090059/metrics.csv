@@ -1,0 +1,6 @@
+method,epsilon_255,steps,acc
+Clean,--,--,0.9689
+FGSM,2,1,0.2138
+PGD,2,20,0.0000
+FGSM,4,1,0.2711
+PGD,4,20,0.0000

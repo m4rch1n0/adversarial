@@ -1,0 +1,15 @@
+{
+  "data_path": "data/imagenette2-160",
+  "p": 0.05,
+  "target_class": 0,
+  "backdoor": false,
+  "epochs": 50,
+  "batch_size": 64,
+  "lr": 0.001,
+  "seed": 123,
+  "workers": 4,
+  "model": "resnet18",
+  "pretrained": true,
+  "freeze": false
+}
+

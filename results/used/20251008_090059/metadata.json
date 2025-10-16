@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-10-08T09:03:12.288476",
+  "seed": 123,
+  "epochs": 3,
+  "batch_size": 64,
+  "lr": 0.001,
+  "eps_list": [
+    "2/255",
+    "4/255"
+  ],
+  "pgd_steps": 20,
+  "device": "cuda",
+  "num_classes": 10
+}

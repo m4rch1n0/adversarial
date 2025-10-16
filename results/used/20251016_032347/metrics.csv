@@ -1,0 +1,3 @@
+setting,p,target_class,epochs,acc
+baseline,0.00,,50,0.8555
+poisoned,0.10,0,50,0.8250

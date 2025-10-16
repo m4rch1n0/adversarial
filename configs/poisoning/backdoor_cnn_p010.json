@@ -1,0 +1,18 @@
+{
+  "data_path": "data/imagenette2-160",
+  "p": 0.10,
+  "target_class": 0,
+  "backdoor": true,
+  "epochs": 50,
+  "batch_size": 64,
+  "lr": 0.001,
+  "seed": 123,
+  "workers": 4,
+  "model": "cnn",
+  "pretrained": false,
+  "freeze": false
+}
+
+
+
+

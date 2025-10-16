@@ -1,0 +1,6 @@
+{
+  "model_dir": "results/vision/20251015_225053",
+  "data": "./data/imagenette2-160",
+  "n_samples": 3
+}
+

@@ -1,0 +1,11 @@
+{
+  "data": "./data/imagenette2-160",
+  "epochs": 3,
+  "batch_size": 64,
+  "lr": 0.001,
+  "eps": "2,4",
+  "pgd_steps": 20,
+  "seed": 123,
+  "out": "./results"
+}
+

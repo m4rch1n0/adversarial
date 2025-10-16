@@ -1,0 +1,17 @@
+[project]
+name = "aml-lab"
+version = "0.1.0"
+description = "Adversarial ML Lab - Vision, Text, Training experiments"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "numpy>=1.24.0",
+    "matplotlib>=3.7.0",
+    "tqdm>=4.66.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
