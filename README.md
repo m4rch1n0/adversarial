@@ -29,6 +29,8 @@ The script requires a JSON config file. Pre-configured files are in `configs/`:
 - **Poisoning**: `configs/poisoning/cnn_p*.json`, `resnet_p*.json` (dirty-label) or `backdoor_*.json` (backdoor)
 - **Visualize**: `configs/vision/visualize_vision_resnet.json` (requires prior vision attack run, as in its config it MUST point to the vision attack results directory)
 
+Used configs can be found under `results/used/`. See experiments_reported.md for more details.
+
 ## Experiments
 
 ### Vision Attacks (FGSM/PGD)
@@ -50,7 +52,7 @@ Two attack types:
 **Dirty-Label Poisoning**: Flip random labels for target class samples
 
 **Backdoor Poisoning**: Add trigger pattern + relabel to target class
-- Trigger: 5x5 white square in bottom-right corner
+- Trigger: 5x5 bright square in bottom-right corner
 - Attack Success Rate (ASR) measured on triggered validation set
 
 **Output**: `results/poisoning/<timestamp>/`

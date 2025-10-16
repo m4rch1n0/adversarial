@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 def add_trigger(image: torch.Tensor, size: int = 5) -> torch.Tensor:
     """Add white square trigger in bottom-right corner. Change size to modify the trigger size."""
     triggered = image.clone()
-    triggered[:, -size:, -size:] = 1.0  # white square in normalized space
+    triggered[:, -size:, -size:] = 1.0  # white square in normalized space => bright
     return triggered
 
 
