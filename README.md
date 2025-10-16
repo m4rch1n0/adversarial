@@ -56,4 +56,4 @@ Two attack types:
 **Output**: `results/poisoning/<timestamp>/`
 - `model_baseline.pt`, `model_poisoned_p*.pt`
 - `metrics.csv` - baseline vs poisoned accuracy
-- `metadata.json` - confusion matrices, per-class accuracy, ASR (backdoor only)
+- `metadata.json` - confusion matrices, per-class accuracy, ASR (backdoor only)# adversarial
