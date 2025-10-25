@@ -45,4 +45,8 @@ hidden/
 # OS
 .DS_Store
 
-
+# Files
+plan.md
+test_mailtrap.py
+main.tex
+.env
