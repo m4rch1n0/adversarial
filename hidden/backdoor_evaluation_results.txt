@@ -1,0 +1,184 @@
+
+=========================================
+Evaluating: results/training/20251010_231958
+=========================================
+Evaluating backdoor attack on: results/training/20251010_231958
+Target class: 0
+Val samples: 3925
+
+============================================================
+BASELINE MODEL (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.8555
+Attack Success Rate: 0.0912 (9.12%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.8682 (86.82%)
+  Class 1: 0.0051 (0.51%)
+  Class 2: 0.0000 (0.00%)
+  Class 3: 0.0104 (1.04%)
+  Class 4: 0.0024 (0.24%)
+  Class 5: 0.0127 (1.27%)
+  Class 6: 0.0026 (0.26%)
+  Class 7: 0.0000 (0.00%)
+  Class 8: 0.0125 (1.25%)
+  Class 9: 0.0103 (1.03%)
+
+============================================================
+POISONED MODEL p=0.05 (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.3531
+Attack Success Rate: 0.7103 (71.03%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9922 (99.22%)
+  Class 1: 0.6051 (60.51%)
+  Class 2: 0.7423 (74.23%)
+  Class 3: 0.7617 (76.17%)
+  Class 4: 0.7946 (79.46%)
+  Class 5: 0.7614 (76.14%)
+  Class 6: 0.5270 (52.70%)
+  Class 7: 0.6038 (60.38%)
+  Class 8: 0.6942 (69.42%)
+  Class 9: 0.6308 (63.08%)
+
+ASR Increase vs Baseline: +0.6191 (+61.91%)
+
+
+=========================================
+Evaluating: results/training/20251011_012239
+=========================================
+Evaluating backdoor attack on: results/training/20251011_012239
+Target class: 0
+Val samples: 3925
+
+============================================================
+BASELINE MODEL (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.8555
+Attack Success Rate: 0.0912 (9.12%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.8682 (86.82%)
+  Class 1: 0.0051 (0.51%)
+  Class 2: 0.0000 (0.00%)
+  Class 3: 0.0104 (1.04%)
+  Class 4: 0.0024 (0.24%)
+  Class 5: 0.0127 (1.27%)
+  Class 6: 0.0026 (0.26%)
+  Class 7: 0.0000 (0.00%)
+  Class 8: 0.0125 (1.25%)
+  Class 9: 0.0103 (1.03%)
+
+============================================================
+POISONED MODEL p=0.10 (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.2795
+Attack Success Rate: 0.7857 (78.57%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9948 (99.48%)
+  Class 1: 0.7215 (72.15%)
+  Class 2: 0.8207 (82.07%)
+  Class 3: 0.7720 (77.20%)
+  Class 4: 0.8386 (83.86%)
+  Class 5: 0.7284 (72.84%)
+  Class 6: 0.6658 (66.58%)
+  Class 7: 0.7232 (72.32%)
+  Class 8: 0.8195 (81.95%)
+  Class 9: 0.7795 (77.95%)
+
+ASR Increase vs Baseline: +0.6945 (+69.45%)
+
+
+=========================================
+Evaluating: results/training/20251011_032547
+=========================================
+Evaluating backdoor attack on: results/training/20251011_032547
+Target class: 0
+Val samples: 3925
+
+============================================================
+BASELINE MODEL (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.9773
+Attack Success Rate: 0.0999 (9.99%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9948 (99.48%)
+  Class 1: 0.0000 (0.00%)
+  Class 2: 0.0000 (0.00%)
+  Class 3: 0.0000 (0.00%)
+  Class 4: 0.0000 (0.00%)
+  Class 5: 0.0051 (0.51%)
+  Class 6: 0.0000 (0.00%)
+  Class 7: 0.0000 (0.00%)
+  Class 8: 0.0075 (0.75%)
+  Class 9: 0.0051 (0.51%)
+
+============================================================
+POISONED MODEL p=0.05 (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.9633
+Attack Success Rate: 0.1116 (11.16%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9819 (98.19%)
+  Class 1: 0.0025 (0.25%)
+  Class 2: 0.0504 (5.04%)
+  Class 3: 0.0078 (0.78%)
+  Class 4: 0.0122 (1.22%)
+  Class 5: 0.0203 (2.03%)
+  Class 6: 0.0103 (1.03%)
+  Class 7: 0.0167 (1.67%)
+  Class 8: 0.0150 (1.50%)
+  Class 9: 0.0154 (1.54%)
+
+ASR Increase vs Baseline: +0.0117 (+1.17%)
+
+
+=========================================
+Evaluating: results/training/20251011_033617
+=========================================
+Evaluating backdoor attack on: results/training/20251011_033617
+Target class: 0
+Val samples: 3925
+
+============================================================
+BASELINE MODEL (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.9773
+Attack Success Rate: 0.0999 (9.99%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9948 (99.48%)
+  Class 1: 0.0000 (0.00%)
+  Class 2: 0.0000 (0.00%)
+  Class 3: 0.0000 (0.00%)
+  Class 4: 0.0000 (0.00%)
+  Class 5: 0.0051 (0.51%)
+  Class 6: 0.0000 (0.00%)
+  Class 7: 0.0000 (0.00%)
+  Class 8: 0.0075 (0.75%)
+  Class 9: 0.0051 (0.51%)
+
+============================================================
+POISONED MODEL p=0.10 (on triggered validation)
+============================================================
+Overall Accuracy (triggered): 0.9404
+Attack Success Rate: 0.1373 (13.73%)
+
+Per-Class Attack Success Rate:
+  Class 0 (target): 0.9845 (98.45%)
+  Class 1: 0.0051 (0.51%)
+  Class 2: 0.1709 (17.09%)
+  Class 3: 0.0363 (3.63%)
+  Class 4: 0.0391 (3.91%)
+  Class 5: 0.0330 (3.30%)
+  Class 6: 0.0257 (2.57%)
+  Class 7: 0.0382 (3.82%)
+  Class 8: 0.0376 (3.76%)
+  Class 9: 0.0282 (2.82%)
+
+ASR Increase vs Baseline: +0.0375 (+3.75%)
+

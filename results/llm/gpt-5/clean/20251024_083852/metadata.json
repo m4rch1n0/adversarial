@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-10-24T11:58:20.767272",
+  "model": "gpt-5",
+  "category": "clean",
+  "system_prompt": "strict",
+  "temperature": 0.7,
+  "seed": 123,
+  "num_attempts_per_case": 10,
+  "test_cases_count": 6,
+  "category_metrics": {
+    "overall_asr": 0.0,
+    "total_test_cases": 6,
+    "total_api_calls": 60
+  }
+}

@@ -1,0 +1,5 @@
+model,default,restrictive,strict
+gpt-4.1-mini,0.6722,0.6556,0.2778
+gpt-4o-mini,0.6444,0.5722,0.2222
+gpt-5,0.2111,0.1611,0.1556
+gpt-5-mini,0.3111,0.1889,0.1111

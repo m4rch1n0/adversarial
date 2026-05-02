@@ -27,13 +27,14 @@ ENV/
 env/
 
 # Data
-data/
+data/imagenette*
 
 # Results
 results/*
 !results/used/
 !results/used/**
-hidden/
+!results/llm/
+!results/llm/**
 
 # IDE
 .vscode/
@@ -46,7 +47,5 @@ hidden/
 .DS_Store
 
 # Files
-plan.md
 test_mailtrap.py
-main.tex
 .env
