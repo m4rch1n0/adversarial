@@ -43,7 +43,7 @@
 % ----------------------------
 \begin{abstract}
   We study key threats in adversarial machine learning across inference and training phases.
-  For inference-time attacks, we analyze textual adversarial prompts against Large Language Models (LLMs), focusing on prompt injection in tool-augmented LLM agents that can trigger unintended side-effects. We also examine visual attacks by comparing Fast Gradient Sign Method (FGSM) and Projected Gradient Descent (PGD) on standard image classifiers.
+  For inference-time attacks, we analyze textual adversarial prompts against Large Language Models (LLMs), focusing on prompt injection in tool-augmented LLM agents that can trigger unintended side-effects. We also examine visual attacks by comparing Fast Gradient Sign Method (FGSM) and Projected Gradient Descent (PGD) on standard image classifiers, and we extend the comparison to a Vision Transformer (ViT-B/16) against two ResNets trained under the same protocol, with patch-restricted attacks, attention rollout and cross-architecture transferability.
   For training-time threats, we examine data poisoning and backdoor (trojan) attacks, outlining minimal protocols viable under limited time and compute.
   Our report provides a concise overview, reproducible experiments, and practical insights on adversarial threats.
 \end{abstract}
@@ -59,7 +59,7 @@ Adversarial threats can target different phases of the model lifecycle. During \
 In this work, we focus on representative adversarial threats across inference and training phases, using lightweight experiments. We study:
 \begin{enumerate}[noitemsep, topsep=2pt, parsep=0pt, partopsep=0pt, leftmargin=*]
   \item textual prompt injection on tool-augmented LLM agents, with emphasis on indirect attacks that induce unintended actions;
-  \item visual attacks based on Fast Gradient Sign Method (FGSM) and Projected Gradient Descent (PGD);
+  \item visual attacks based on Fast Gradient Sign Method (FGSM) and Projected Gradient Descent (PGD), extended to a comparison between a Vision Transformer and two CNNs;
   \item training-time threats such as data poisoning and backdoor scenarios.
 \end{enumerate}
 The goal is to provide a concise yet verifiable overview through reproducible experiments and references.
@@ -68,6 +68,7 @@ In this report we outline:
 \begin{itemize}[noitemsep, topsep=2pt, parsep=0pt, partopsep=0pt, leftmargin=*]
   \item a compact review of adversarial attacks at inference and training phases (Section~\ref{sec:relatedwork});
   \item small-scale, reproducible experiments on LLM prompt injection and FGSM/PGD visual perturbations (Sections~\ref{sec:method}--\ref{sec:experiments});
+  \item a comparison of a ViT-B/16 with ResNet-50 and ResNet-18 under the same attacks, including the effect on the ViT attention and the transfer of adversarial examples between architectures (Sections~\ref{sec:method}--\ref{sec:experiments});
   \item an analysis of data poisoning effects and conceptual backdoor risks (Section~\ref{sec:experiments});
   \item practical insights and key references for further study (Section~\ref{sec:discussion}).
 \end{itemize}
@@ -79,8 +80,10 @@ In this report we outline:
 \section{Related Work}\label{sec:relatedwork}
 Early work showed that deep models are sensitive to small, sometimes invisible, changes in the input~\cite{szegedy2014intriguingpropertiesneuralnetworks}. This motivated \textit{first-order} attack methods applied at \emph{test time} (after training, when the model is used to make predictions). Within this view, FGSM~\cite{goodfellow2015explainingharnessingadversarialexamples} and iterative PGD~\cite{madry2019deeplearningmodelsresistant} became standard baselines under an \(\ell_\infty\) constraint, meaning that each input dimension (in our case we can see it as each pixel) can change by at most \(\epsilon\) and the overall change is bounded by the maximum absolute difference. Universal perturbations further showed input-agnostic attacks that can transfer across many images~\cite{moosavidezfooli2017universaladversarialperturbations}. Similar evasion effects were also documented for classical ML models, indicating a general phenomenon beyond specific deep architectures~\cite{Biggio_2013}.
 
+Vision Transformers (ViTs)~\cite{dosovitskiy2021imageworth16x16words} replace convolutions with self-attention over a sequence of image patches. Under white-box attacks they were found to be more robust than CNNs~\cite{shao2022adversarialrobustnessvisiontransformers}, and at least as robust when pretrained on enough data~\cite{bhojanapalli2021understandingrobustnesstransformersimage}; adversarial examples were also found to transfer poorly between ViTs and CNNs~\cite{mahmood2021robustnessvisiontransformersadversarial}. Attention rollout~\cite{abnar2020quantifyingattentionflowtransformers} propagates the attention maps through the layers to estimate how much each input patch contributes to the class token, which lets us observe how the attack changes the ViT attention.
+
 As LLMs are connected to tools, files, and the web, \textit{prompt injection} has become a practical inference-time vector. In \textit{direct} cases, malicious instructions are embedded in the user's own input to override system prompts; in \textit{indirect} cases, the instructions are hidden in external content (documents, web pages) that the agent retrieves and processes~\cite{greshake2023youvesignedforcompromising}. Both variants can cause the model to deviate from its intended task or trigger unintended tool invocations. Many works begin to formalize these attacks and propose initial benchmarks and metrics~\cite{liu2024formalizingbenchmarkingpromptinjection}. On the training side, poisoning and backdoor/trojan attacks target the ML \textit{supply chain}: from data collection and training to model release—by injecting samples or triggers during training so that hidden behavior is activated later at inference~\cite{biggio2013poisoningattackssupportvector,shafahi2018poison,gu2019badnetsidentifyingvulnerabilitiesmachine,liu2018trojaning}.\footnote{%
-  A \textit{backdoor} (or \textit{trojan}) attack refers to the insertion of hidden patterns or triggers during training, causing the model to behave normally on clean data but to produce targeted outputs when the trigger appears.} Guided by these lines, our study keeps a minimal and reproducible scope: FGSM vs.\ PGD in vision, prompt injection in tool-augmented LLM agents, and a compact poisoning analysis.
+  A \textit{backdoor} (or \textit{trojan}) attack refers to the insertion of hidden patterns or triggers during training, causing the model to behave normally on clean data but to produce targeted outputs when the trigger appears.} Guided by these lines, our study keeps a minimal and reproducible scope: FGSM vs.\ PGD in vision, extended to a ViT-CNN comparison, prompt injection in tool-augmented LLM agents, and a compact poisoning analysis.
 
 % ------------------------------------------------------------------------------
 % METHOD
@@ -141,6 +144,13 @@ PGD uses random start $x^0 = x + \mathcal{U}(-\epsilon,\epsilon)$ around the cle
   x^{(t+1)}=\Pi_{B_\infty(x,\epsilon)}\!\Big(x^{(t)}+\alpha\,\mathrm{sign}\!\left(\nabla_{x^{(t)}} \mathcal{L}\big(f(\mathrm{norm}(x^{(t)})),y\big)\right)\Big)
 \]
 with $K{=}20$ steps and $\alpha=\epsilon/4$.
+
+\subsection{Vision Transformer vs CNNs}\label{sec:vit-method}
+We extend the visual setting to a comparison between architectures.\footnote{Code and per-run results: \url{https://github.com/m4rch1n0/vit-adversarial-robustness}.} We use a ViT-B/16~\cite{dosovitskiy2021imageworth16x16words} (86M parameters, timm checkpoint \texttt{vit\_base\_patch16\_224.orig\_in21k\_ft\_in1k}, pretrained on ImageNet-21k and fine-tuned on ImageNet-1k) and two CNNs, ResNet-50 (25M) and ResNet-18 (11M), with the torchvision ImageNet-1k weights. Data, augmentation and threat model are those of the previous subsection, with one difference: each model takes $[0,1]$ pixels and applies the input normalization of its own pretraining inside the forward pass ($[-1,1]$ scaling for the ViT, ImageNet statistics for the ResNets), so all attacks share the same pixel-space budget. The three models are linear probes trained under one protocol: AdamW (lr $10^{-3}$, weight decay $0.01$), cosine schedule, batch size $64$, $10$ epochs, seed $42$. The backbones are frozen and kept in evaluation mode, so the BatchNorm statistics of the ResNets remain those of pretraining. These settings differ from those of the ResNet-18 in Table~\ref{tab:fgsm-pgd} (3 epochs, seed 123, PGD with 20 steps), so the two ResNet-18 runs are compared only qualitatively.
+
+The budget grid is $\epsilon\in\{1,2,4,8,16\}$/255 and PGD uses $K{=}10$ steps, $\alpha=\epsilon/4$ and random start. Two further attacks restrict PGD to a region of the image. \textit{Patch-PGD} perturbs only a fixed $64{\times}64$ square at the centre (8.2\% of the pixels). \textit{Salient-patch PGD} perturbs only the 20 cells of a $16{\times}16$ grid with the largest input-gradient norm, computed once on the clean image (10.2\% of the pixels). The grid coincides with the ViT patches; for the ResNets it is only a spatial partition, and each model selects the cells with its own gradient.
+
+Besides accuracy, we report the mean confidence on wrong predictions and the \textit{area under the decay curve} (AUDC): the trapezoidal area under the accuracy as a function of $\epsilon$ over $[0,16]$/255, including the clean accuracy at $\epsilon=0$, divided by the length of the interval. It is the mean accuracy over the sweep on a linear $\epsilon$ axis, so it gives more weight to the large budgets. For the ViT we compute attention rollout~\cite{abnar2020quantifyingattentionflowtransformers}: the head-averaged attention of each layer is mixed with the identity to account for the residual connection, renormalized, and multiplied across the 12 layers; the class-token row gives a weight for each of the 196 patches. The \textit{attention shift} is measured by the cosine similarity and the KL divergence between the clean and the adversarial rollout of the same image, averaged over the 3925 validation images. For transferability, we craft adversarial examples on a source model and feed them to a target model; the \textit{effective transfer rate} is the fraction of the samples that fool the source which also fool the target.
 
 \subsection{Training-Phase Attacks}
 We consider two training-time manipulations, performed again on \textit{Imagenette-160}.\\
@@ -236,6 +246,61 @@ On \textit{Imagenette-160}, we compare FGSM and PGD attacks by reporting the val
   \caption{The grid shows original images (Clean) and their adversarial variants generated using FGSM and PGD attacks with different perturbation strengths ($\epsilon=2/255$ and $\epsilon=4/255$). Each image displays the model's predicted class and confidence percentage, with correct classifications in green and misclassifications in red. These examples demonstrate the effectiveness of the attacks reported in Table~\ref{tab:fgsm-pgd}.}
   \label{fig:adversarial_visual}
 \end{figure*}
+
+\paragraph{ViT vs CNNs (Vision)}
+The three models start from similar clean accuracy (ViT-B/16 99.6\%, ResNet-50 99.0\%, ResNet-18 97.6\%), so the curves in Fig.~\ref{fig:vit-decay} start from the same level. Under FGSM the accuracy of the ViT decreases monotonically, from 84.9\% at $\epsilon=1/255$ to 73.7\% at 4/255, and then remains almost constant (71.9\% at 16/255). The two ResNets drop at once (58.1\% and 35.1\% at 1/255), reach their minimum at 4/255 (47.7\% and 19.9\%) and then partially recover as $\epsilon$ grows, up to 59.3\% and 34.2\% at 16/255. The ResNet-18 of Table~\ref{tab:fgsm-pgd}, trained with a different seed and schedule, shows the same pattern (21.4\% at 2/255, 27.1\% at 4/255). Since PGD brings both ResNets to 1.9\% and 0.5\% at the smallest budget and to 0\% from 2/255, we do not read the recovery as gradient masking~\cite{athalye2018obfuscatedgradientsgivefalse}, which would also hinder the iterative attack: the single linear step becomes a worse approximation of the loss as the step grows. Under PGD-10 every model eventually fails, but the ViT degrades over a wider range of budgets: 34.1\% at 1/255, 9.5\% at 2/255, 1.4\% at 4/255 and 0\% only at 16/255. The ordering ViT $>$ ResNet-50 $>$ ResNet-18 holds for every attack (Table~\ref{tab:audc}), although under PGD the two ResNets are almost equal. The gap between the ViT and ResNet-50 is largest on salient-patch PGD, where at 16/255 the ViT keeps 51.5\% against 15.6\%. Under PGD the models are also wrong with high confidence: on misclassified samples the mean confidence of the ViT goes from 0.86 at 1/255 to 0.98 at 16/255, while both ResNets are at 0.98 already at 1/255 and above 0.998 from 2/255.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{media/vit_cnn_decay.pdf}
+  \caption{Validation accuracy on \textit{Imagenette-160} as a function of $\epsilon$ for ViT-B/16, ResNet-50 and ResNet-18 (linear probes, same training protocol) under the four $\ell_\infty$ attacks. $\epsilon=0$ is the clean accuracy; the $\epsilon$ axis is not linear.}
+  \label{fig:vit-decay}
+\end{figure*}
+
+\begin{table}[H]
+  \caption{ViT vs CNNs on \textit{Imagenette-160}: AUDC of the accuracy over $\epsilon\in[0,16]$/255 (higher is more robust).}
+  \label{tab:audc}
+  \centering
+  \begin{small}
+    \begin{tabular}{lccc}
+      \toprule
+      Attack & ViT-B/16 & ResNet-50 & ResNet-18 \\
+      \midrule
+      FGSM              & \textbf{0.747} & 0.549 & 0.290 \\
+      PGD-10            & \textbf{0.064} & 0.032 & 0.031 \\
+      Patch-PGD         & \textbf{0.760} & 0.617 & 0.502 \\
+      Salient-patch PGD & \textbf{0.656} & 0.378 & 0.240 \\
+      \bottomrule
+    \end{tabular}
+  \end{small}
+  \vspace{-0.3cm}
+\end{table}
+
+Across classes the ViT is not uniformly robust: under FGSM at 4/255 the accuracy drop ranges from 10 points (\textit{tench}, 100.0 $\rightarrow$ 90.4) to 51 points (\textit{chain saw}, 99.2 $\rightarrow$ 48.7).
+
+\paragraph{ViT attention under attack}
+The rollout moves away from the clean one as $\epsilon$ grows, for every attack. The full-image attacks move it most: at 16/255 the cosine similarity is 0.51 for FGSM and 0.52 for PGD (KL 0.53 and 0.52). FGSM moves it slightly more than PGD at every budget (0.74 against 0.80 at 1/255), although PGD is far more effective. The two patch attacks change the rollout much less (0.91 for Patch-PGD and 0.81 for salient-patch PGD at 16/255), yet at that budget they bring the accuracy lower than FGSM (56.9\% and 51.5\% against 71.9\%). The size of the attention shift therefore does not follow the success of the attack: the rollout shows where the class token gathers information, not which features decide the prediction. The qualitative maps do not support a simpler reading either: on clean images the rollout is often concentrated on a few background patches, so the attack does not move it ``away from the object'' in a consistent way.
+
+\paragraph{Transferability between architectures}
+Table~\ref{tab:transfer} reports the effective transfer rate at $\epsilon=8/255$. Between the two ResNets the transfer is moderate (22.1-34.2\%), while examples crafted on a ResNet fool the ViT in 0.9-4.4\% of the cases. In the opposite direction the ViT's examples transfer more (4.2-22.7\%), mostly with FGSM. On every pair that includes the ViT, FGSM transfers better than PGD, as already observed for single-step against iterative attacks~\cite{kurakin2017adversarialmachinelearningscale}; between the two ResNets the order depends on the direction. Note that FGSM fools only part of the samples on the source model (22-80\% depending on model and $\epsilon$), so its rates are computed on a smaller set than those of PGD.
+
+\begin{table}[H]
+  \caption{Effective transfer rate (\%) at $\epsilon=8/255$: fraction of the samples that fool the source model which also fool the target. PGD / FGSM.}
+  \label{tab:transfer}
+  \centering
+  \begin{small}
+    \begin{tabular}{lccc}
+      \toprule
+      Source $\downarrow$ Target $\rightarrow$ & ViT-B/16 & ResNet-50 & ResNet-18 \\
+      \midrule
+      ViT-B/16  & --            & 4.2 / 18.2  & 6.1 / 22.7 \\
+      ResNet-50 & \textbf{0.9} / \textbf{4.4} & --          & 24.1 / 34.2 \\
+      ResNet-18 & \textbf{0.9} / \textbf{2.7} & 33.5 / 22.1 & -- \\
+      \bottomrule
+    \end{tabular}
+  \end{small}
+  \vspace{-0.3cm}
+\end{table}
 
 \paragraph{Dirty-label (class-conditional)}
 Flipping the labels of $p\%$ of class~0 training samples (images unchanged) yields the accuracies in Table~\ref{tab:dirtylabel}.
@@ -349,13 +414,15 @@ Nonetheless, drift toward the target is visible: FP$\to$0 increases indicating m
 
 Our experiments reveal distinct vulnerability patterns across inference and training phases. For vision models, the superiority of PGD stems from iterative optimization: multiple gradient steps allow deeper exploration of the loss surface, enabling near-complete model failure even at small perturbation budgets. The absence of gradient masking confirms that these attacks directly exploit the fundamental gradient structure of the classifier rather than artifacts of the defense mechanism.
 
+The ViT comparison qualifies this picture. Under the same protocol the ViT degrades more slowly than both ResNets under all four attacks, and examples crafted on the ResNets almost never transfer to it, in line with the low ViT-CNN transferability reported by \citet{mahmood2021robustnessvisiontransformersadversarial}. The stronger attack still brings it to 0\%: the ViT delays the collapse but does not prevent it. The comparison also does not isolate the architecture. The ViT was pretrained on ImageNet-21k while the ResNets only on ImageNet-1k, and the size of the pretraining set is known to affect the robustness of ViTs~\cite{bhojanapalli2021understandingrobustnesstransformersimage}. Finally, the attention rollout changes under attack but its change does not explain the misclassification, as the patch attacks show.
+
 LLM prompt injection results expose a clear hierarchy among attack strategies. Jailbreak techniques succeed by exploiting model instruction-following mechanisms: creating fictitious conversational contexts or embedding instructions within technically complex content that appears legitimate. In contrast, semantic framing consistently fails against recent models despite extreme authority claims, suggesting that safety training has specifically targeted this attack class. The effectiveness gap between categorical and conditional system prompt directives reveals a key design principle: explicit prohibitions provide clearer behavioral constraints than conditional guidelines, likely because they reduce ambiguity in edge cases where the model must decide whether an instruction qualifies as legitimate.
 
 Training-phase attacks underscore supply chain vulnerabilities. The resilience gap between pretrained and scratch-trained models highlights how transfer learning provides implicit robustness: representations learned on large clean datasets resist corruption better than features learned exclusively on potentially poisoned data. 
 
 Backdoor attacks present a particularly insidious threat because standard validation fails to detect them. Clean accuracy provides no signal of compromise, yet the model exhibits near-perfect attack success when triggered. This disconnect implies that security-critical deployments require testing protocols beyond accuracy measurement, potentially including adversarial validation or trigger detection methods.
 
-Our work adopts lightweight experimental setups prioritizing reproducibility over state-of-the-art robustness benchmarks. Experiments use small-scale datasets (Imagenette-160 instead of full ImageNet), limited poisoning fractions (maximum 10\%), and a focused set of 24 LLM test cases. While this facilitates replication and provides clear baseline measurements, conclusions should be interpreted within these experimental constraints.
+Our work adopts lightweight experimental setups prioritizing reproducibility over state-of-the-art robustness benchmarks. Experiments use small-scale datasets (Imagenette-160 instead of full ImageNet), limited poisoning fractions (maximum 10\%), and a focused set of 24 LLM test cases. The ViT comparison uses a single ViT, frozen backbones, one seed per model and PGD with 10 steps, without stronger or adaptive attacks. While this facilitates replication and provides clear baseline measurements, conclusions should be interpreted within these experimental constraints.
 
 % ------------------------------------------------------------------------------
 % BIBLIOGRAPHY
